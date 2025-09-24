@@ -44,7 +44,7 @@ export default function Services() {
   return (
     <section className="py-16 bg-base-200">
       <div className="max-w-6xl mx-auto px-4 text-center">
-        <h2 className="text-3xl md:text-4xl font-bold text-primary">Our Services</h2>
+        <h2 className="text-3xl text-primary md:text-4xl font-bold text-primary">Our Services</h2>
         <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
           Enjoy fast reliable parcel delivery with real-time tracking and zero hassle. 
           From personal packages to business shipments we deliver on time every time..
