@@ -25,7 +25,7 @@ const benefits = [
 
 export default function Benefits() {
   return (
-    <div className="hero bg-base-100 py-16">
+    <div className="hero bg-base-100 e-full py-16">
       <div className="hero-content max-w-3xl w-full flex-col">
         <h2 className="text-3xl md:text-4xl font-bold text-primary text-center">
           Why Choose Us
