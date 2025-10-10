@@ -32,8 +32,6 @@ const Register = () => {
                   errors.password?.type === 'minLength' && <p className='text-red-500'>Password must be 6 characters or longer</p>
               }
               
-              
-              
               </fieldset>
               <button className="btn btn-neutral mt-4">Register</button>
                   </form>
