@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form';
 import useAuth from '../../../hooks/useAuth';
 import { Link } from 'react-router-dom';
+import SocialLogin from '../SocialLogin/SocialLogin';
 const Register = () => {
   const { register, handleSubmit, formState: {errors} } = useForm();
   
@@ -48,6 +49,7 @@ const Register = () => {
                 <p><small>Already have an account? Please <Link className='btn btn-link' to="/login">
                 Login</Link> </small></p>
                   </form>
+                  <SocialLogin></SocialLogin>
               </div>
           );
 };
