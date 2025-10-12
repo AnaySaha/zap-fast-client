@@ -1,5 +1,7 @@
 
 import { useForm } from 'react-hook-form';
+import { Link } from 'react-router-dom';
+import SocialLogin from '../SocialLogin/SocialLogin';
 
 const Login = () => {
     const { register, handleSubmit, formState: {errors} } = useForm();
@@ -9,7 +11,7 @@ const Login = () => {
         }
 
         return (
-            <div>
+            <div className='text-center'>
                 <h1 className='text-4xl'> Log In</h1>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <fieldset className="fieldset">
@@ -34,7 +36,10 @@ const Login = () => {
             
             </fieldset>
             <button className="btn btn-neutral mt-4">Login</button>
+              <p><small>New to this website? Please create an account first <Link className='btn btn-link' to="/register">
+                Register</Link> </small></p>
                 </form>
+                <SocialLogin></SocialLogin>
             </div>
         );
 };
