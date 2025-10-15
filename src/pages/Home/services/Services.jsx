@@ -47,7 +47,7 @@ export default function Services() {
         <h2 className="text-3xl text-primary md:text-4xl font-bold text-primary">Our Services</h2>
         <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
           Enjoy fast reliable parcel delivery with real-time tracking and zero hassle. 
-         Enjoy
+        
         </p>
 
         {/* Responsive grid */}
