@@ -7,6 +7,8 @@ import L from "leaflet";
 import 'leaflet/dist/leaflet.css';
 
 const BangladeshMap = ({serviceCenters}) => {
+
+
   // Define marker icon fix (Leaflet default marker path issue in React)
   const defaultIcon = L.icon({
     iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
@@ -37,20 +39,20 @@ const BangladeshMap = ({serviceCenters}) => {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
 
-        {
-            serviceCenters.map((center, index) =>
+        { 
+ serviceCenters.map((center, index) =>
             <Marker 
             key={index}
           position={[center.latitude, center.longitude]}>
             
             <Popup>
+                
                 <strong>{center.district}</strong><br />
-                {center.covered_area.join(',')}
-                We are available across Bangladesh!
+         
+                 {center.covered_area.join(',')}
             </Popup>
           </Marker>
             )
-       
         }
    
         </MapContainer>
