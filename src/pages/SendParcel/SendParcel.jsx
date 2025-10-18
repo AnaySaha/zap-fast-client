@@ -4,6 +4,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const SendParcel = () => {
+  
   const {
     register,
     handleSubmit,
@@ -11,6 +12,8 @@ const SendParcel = () => {
     reset,
     formState: { errors },
   } = useForm();
+
+  
 
   const [serviceData, setServiceData] = useState([]);
   const [regions, setRegions] = useState([]);
@@ -112,11 +115,11 @@ const SendParcel = () => {
 
             {/* Title */}
             <div className="form-control">
-              <label className="label font-medium">Title *</label>
+              <label className="label font-medium">Parcel Name</label>
               <input
                 type="text"
                 {...register("title", { required: true })}
-                placeholder="Parcel title"
+                placeholder="Describe your parcel"
                 className="input input-bordered w-full"
               />
               {errors.title && (
