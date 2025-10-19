@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -39,25 +40,37 @@ const SendParcel = () => {
     return serviceData.filter((item) => item.region === region);
   };
 
-  const onSubmit = (data) => {
-    let baseCost = data.parcelType === "document" ? 50 : 100;
-    if (data.parcelType === "non-document" && data.weight) {
-      baseCost += Number(data.weight) * 10;
-    }
+const onSubmit = (data) => {
+  const isWithinDistrict = data.senderServiceCenter === data.receiverServiceCenter;
+  const weight = Number(data.weight) || 0;
+  let baseCost = 0;
 
-    toast.info(
-      <div className="text-center">
-        <p className="font-semibold">Delivery Cost: ৳{baseCost}</p>
-        <button
-          className="btn btn-success btn-sm mt-2"
-          onClick={() => handleConfirm(data, baseCost)}
-        >
-          Confirm
-        </button>
-      </div>,
-      { autoClose: false }
-    );
-  };
+  if (data.parcelType === "document") {
+    baseCost = isWithinDistrict ? 60 : 80;
+  } else if (data.parcelType === "non-document") {
+    if (weight <= 3) {
+      baseCost = isWithinDistrict ? 110 : 150;
+    } else {
+      const extraKg = weight - 3;
+      const extraCost = extraKg * 40;
+      baseCost = isWithinDistrict ? 110 + extraCost : 150 + extraCost + 40;
+    }
+  }
+
+  toast.info(
+    <div className="text-center">
+      <p className="font-semibold">Delivery Cost: ৳{baseCost}</p>
+      <button
+        className="btn btn-success btn-sm mt-2"
+        onClick={() => handleConfirm(data, baseCost)}
+      >
+        Confirm
+      </button>
+    </div>,
+    { autoClose: false }
+  );
+};
+
 
   const handleConfirm = (data, cost) => {
     const parcelData = {
@@ -75,7 +88,7 @@ const SendParcel = () => {
     <div className="max-w-6xl mx-auto p-8 bg-white shadow-xl rounded-2xl mt-10">
       <h2 className="text-3xl font-bold text-center mb-2">📦 Send a Parcel</h2>
       <p className="text-center text-gray-500 mb-8">
-        Fill in the parcel, sender, and receiver information carefully.
+        Fill in the parcel, sender, and receiver information.
       </p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
