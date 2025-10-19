@@ -2246,6 +2246,11 @@ supports-color@^7.1.0:
   dependencies:
     has-flag "^4.0.0"
 
+sweetalert2@^11.26.3:
+  version "11.26.3"
+  resolved "https://registry.npmjs.org/sweetalert2/-/sweetalert2-11.26.3.tgz"
+  integrity sha512-VU0hGw/WfI9h7Mh+SCsDlWgtxDwWZ6ccqS7QcO8zEeWnwplN1GptcLstq76OluUBSLUza6ldvKd3558OhjpJ9A==
+
 tailwindcss@^4.1.13, tailwindcss@4.1.13:
   version "4.1.13"
   resolved "https://registry.npmjs.org/tailwindcss/-/tailwindcss-4.1.13.tgz"

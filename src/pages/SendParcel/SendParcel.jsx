@@ -1,8 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { toast, ToastContainer } from "react-toastify";
+import Swal from "sweetalert2";
 import "react-toastify/dist/ReactToastify.css";
+import useAuth from "../../hooks/useAuth";
+
+
+// src/utils/generateTrackingId.js
+
+ const generateTrackingId = () => {
+  // Example output: TRK-20251020-72643YQJ
+  const now = new Date();
+
+  // Date part (YYYYMMDD)
+  const datePart = now.toISOString().slice(0, 10).replace(/-/g, "");
+
+  // Time part (last 5 digits of timestamp to ensure uniqueness)
+  const timePart = now.getTime().toString().slice(-5);
+
+  // Random uppercase letters/numbers (for extra uniqueness)
+  const randomPart = Math.random().toString(36).substring(2, 5).toUpperCase();
+
+  // Final ID format
+  return `TRK-${datePart}-${timePart}${randomPart}`;
+};
+
 
 const SendParcel = () => {
   
@@ -14,6 +36,7 @@ const SendParcel = () => {
     formState: { errors },
   } = useForm();
 
+  const {user} = useAuth();
   
 
   const [serviceData, setServiceData] = useState([]);
@@ -44,43 +67,107 @@ const onSubmit = (data) => {
   const isWithinDistrict = data.senderServiceCenter === data.receiverServiceCenter;
   const weight = Number(data.weight) || 0;
   let baseCost = 0;
+  let breakdown = "";
 
   if (data.parcelType === "document") {
     baseCost = isWithinDistrict ? 60 : 80;
+    breakdown = `
+      <tr>
+        <td>Parcel Type:</td><td><b>Document</b></td>
+      </tr>
+      <tr>
+        <td>Delivery Type:</td><td>${isWithinDistrict ? "Within District" : "Outside District"}</td>
+      </tr>
+      <tr>
+        <td>Base Charge:</td><td>৳${baseCost}</td>
+      </tr>
+    `;
   } else if (data.parcelType === "non-document") {
     if (weight <= 3) {
       baseCost = isWithinDistrict ? 110 : 150;
+      breakdown = `
+        <tr><td>Parcel Type:</td><td><b>Non-Document</b></td></tr>
+        <tr><td>Weight:</td><td>${weight} kg</td></tr>
+        <tr><td>Base Charge (up to 3kg):</td><td>৳${isWithinDistrict ? 110 : 150}</td></tr>
+        <tr><td>Delivery Type:</td><td>${isWithinDistrict ? "Within District" : "Outside District"}</td></tr>
+      `;
     } else {
       const extraKg = weight - 3;
       const extraCost = extraKg * 40;
       baseCost = isWithinDistrict ? 110 + extraCost : 150 + extraCost + 40;
+      breakdown = `
+        <tr><td>Parcel Type:</td><td><b>Non-Document</b></td></tr>
+        <tr><td>Weight:</td><td>${weight} kg</td></tr>
+        <tr><td>Base Charge (first 3kg):</td><td>৳${isWithinDistrict ? 110 : 150}</td></tr>
+        <tr><td>Extra Weight (${extraKg}kg × ৳40):</td><td>৳${extraCost}</td></tr>
+        ${
+          !isWithinDistrict
+            ? `<tr><td>Outside District Surcharge:</td><td>৳40</td></tr>`
+            : ""
+        }
+      `;
     }
   }
 
-  toast.info(
-    <div className="text-center">
-      <p className="font-semibold">Delivery Cost: ৳{baseCost}</p>
-      <button
-        className="btn btn-success btn-sm mt-2"
-        onClick={() => handleConfirm(data, baseCost)}
-      >
-        Confirm
-      </button>
-    </div>,
-    { autoClose: false }
-  );
+  Swal.fire({
+    title: "<h2 style='color:#333;font-weight:600;'>Delivery Cost Breakdown</h2>",
+    html: `
+      <div style="text-align:left;font-size:15px;">
+        <table style="width:100%;margin:auto;border-collapse:collapse;">
+          ${breakdown}
+        </table>
+        <hr style="margin:10px 0;">
+        <h3 style="text-align:center;color:#16a34a;">Total: <b>৳${baseCost}</b></h3>
+      </div>
+    `,
+    icon: "info",
+    showCancelButton: true,
+    confirmButtonText: "Proceed to Payment",
+    cancelButtonText: "Edit Information",
+    confirmButtonColor: "#16a34a",
+    cancelButtonColor: "#d33",
+    allowOutsideClick: false,
+    width: "400px",
+    backdrop: true,
+    customClass: {
+      popup: "rounded-2xl shadow-xl p-4",
+    },
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // User chose to proceed
+      handleConfirm(data, baseCost);
+      Swal.fire({
+        title: "Redirecting...",
+        text: "Proceeding to payment page...",
+        icon: "success",
+        timer: 1200,
+        showConfirmButton: false,
+      });
+    } else {
+      // User wants to edit info — no action, just close
+      Swal.fire({
+        title: "Edit Your Details",
+        text: "You can now update your parcel info before confirming.",
+        icon: "info",
+        timer: 1200,
+        showConfirmButton: false,
+      });
+    }
+  });
 };
-
 
   const handleConfirm = (data, cost) => {
     const parcelData = {
       ...data,
       cost,
+      created_by: user.email,
+      payment_status: 'unpaid',
+      delivery_status: 'not_collected',
+      tracking_id: generateTrackingId(),
       creation_date: new Date().toISOString(),
     };
     console.log("Saving to DB:", parcelData);
-    toast.dismiss();
-    toast.success("✅ Parcel successfully created!");
+
     reset();
   };
 
@@ -280,7 +367,7 @@ const onSubmit = (data) => {
         </div>
       </form>
 
-      <ToastContainer />
+    
     </div>
   );
 };
