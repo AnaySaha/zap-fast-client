@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import "react-toastify/dist/ReactToastify.css";
 import useAuth from "../../hooks/useAuth";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 
 // src/utils/generateTrackingId.js
@@ -37,6 +38,7 @@ const SendParcel = () => {
   } = useForm();
 
   const {user} = useAuth();
+  const axiosSecure = useAxiosSecure();
   
 
   const [serviceData, setServiceData] = useState([]);
@@ -109,6 +111,10 @@ const onSubmit = (data) => {
     }
   }
 
+
+
+  // save data to the server
+
   Swal.fire({
     title: "<h2 style='color:#333;font-weight:600;'>Delivery Cost Breakdown</h2>",
     html: `
@@ -166,8 +172,23 @@ const onSubmit = (data) => {
       tracking_id: generateTrackingId(),
       creation_date: new Date().toISOString(),
     };
-    console.log("Saving to DB:", parcelData);
+    console.log("Ready for payment:", parcelData);
 
+    axiosSecure.post('/parcels', parcelData)
+    .then(res=>{
+      console.log(res.data);
+
+      // redirect to payment
+      if (res.data.insertedId){
+        Swal.fire({
+          title: "Redirecting.....",
+          text: "Proceeding to payment gateway.",
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      }
+    })
     reset();
   };
 
