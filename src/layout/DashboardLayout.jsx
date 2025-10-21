@@ -30,7 +30,7 @@ const DashboardLayout = () => {
       <div className="mx-2 flex-1 px-2 lg:hidden">DashBoard</div>
       <div className="hidden flex-none lg:hidden">
         <ul className="menu menu-horizontal">
-          {/* Navbar menu content here */}git s
+          {/* Navbar menu content here */}
           <li><a>Navbar Item 1</a></li>
           <li><a>Navbar Item 2</a></li>
         </ul>
