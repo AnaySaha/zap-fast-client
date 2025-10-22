@@ -1,6 +1,6 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
-
+import { NavLink, Outlet } from 'react-router-dom';
+import ProfastLogo from '../pages/Home/Home/shared/ProfastLogo/ProfastLogo';
 const DashboardLayout = () => {
     return (
 <div className="drawer lg:drawer-open">
@@ -30,9 +30,7 @@ const DashboardLayout = () => {
       <div className="mx-2 flex-1 px-2 lg:hidden">DashBoard</div>
       <div className="hidden flex-none lg:hidden">
         <ul className="menu menu-horizontal">
-          {/* Navbar menu content here */}
-          <li><a>Navbar Item 1</a></li>
-          <li><a>Navbar Item 2</a></li>
+          
         </ul>
       </div>
     </div>
@@ -46,8 +44,9 @@ const DashboardLayout = () => {
     <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
     <ul className="menu bg-base-200 min-h-full w-80 p-4">
       {/* Sidebar content here */}
-      <li><a>Sidebar Item 1</a></li>
-      <li><a>Sidebar Item 2</a></li>
+      <ProfastLogo></ProfastLogo>
+      <li><a>Home</a></li>
+      <li><NavLink to="/dashboard/myParcels">MY Parcels</NavLink></li>
     </ul>
   </div>
 </div>

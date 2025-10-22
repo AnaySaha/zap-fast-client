@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-
+import { useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import "react-toastify/dist/ReactToastify.css";
 import useAuth from "../../hooks/useAuth";
@@ -39,6 +39,7 @@ const SendParcel = () => {
 
   const {user} = useAuth();
   const axiosSecure = useAxiosSecure();
+  const queryClient = useQueryClient(); // ✅ added
   
 
   const [serviceData, setServiceData] = useState([]);
@@ -158,6 +159,7 @@ const onSubmit = (data) => {
         timer: 1200,
         showConfirmButton: false,
       });
+      queryClient.invalidateQueries(["my-parcels", user.email]);
     }
   });
 };
