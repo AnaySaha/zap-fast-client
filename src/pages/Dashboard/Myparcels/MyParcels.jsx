@@ -3,10 +3,12 @@ import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { FaEye, FaTrashAlt, FaMoneyBillWave } from "react-icons/fa";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const MyParcels = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
+  const navigate = useNavigate();
   const queryClient = useQueryClient(); // ✅ get queryClient instance
 
   const {
@@ -29,6 +31,7 @@ const MyParcels = () => {
 
   const handlePay = async (parcel) => {
     alert(`Redirecting to payment for parcel: ${parcel.tracking_id}`);
+  navigate(`/dashboard/payment/${parcel}`)
   };
 
   const handleDelete = async (id) => {
