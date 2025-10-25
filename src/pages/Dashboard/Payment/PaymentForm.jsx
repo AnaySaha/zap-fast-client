@@ -1,12 +1,14 @@
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
-import React from 'react';
+import React, { useState } from 'react';
 import { Form } from 'react-router-dom';
 
 const PaymentForm = () => {
     const stripe = useStripe();
     const elements = useElements();
+
+   const [error, setError] = useState('');
    
-    const handleSubmit = e => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
          if(!stripe || !elements){
             return;
@@ -16,15 +18,31 @@ const PaymentForm = () => {
          if(!card){
             return;
          }
+
+         const {error, paymentMethod} = await stripe.createPaymentMethod({
+            type: 'card',
+            card
+         })
+
+         if(error){
+           setError(error.message);
+         }
+         else{
+            setError('');
+            console.log('paymentMethod', paymentMethod)
+         }
     }
     return (
         <div>
-            <form onSubmit={handleSubmit}>
-            <CardElement>
-                 <button type="submit" disabled={!stripe}>
-        Pay
+            <form className="bg-white p-6 rounded-2xl shadow-md max-w-md mx-auto space-y-4" onSubmit={handleSubmit}>
+            <CardElement className='p-2 border rounded' />
+                 <button  className="btn btn-primary w-full" type="submit" disabled={!stripe}>
+        Payment
       </button>
-            </CardElement>
+      {
+        error && <p className='text-red-500'> {error}</p>
+      }
+           
             </form>
         </div>
     );
