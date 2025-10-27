@@ -27,6 +27,8 @@ import { useQuery } from '@tanstack/react-query';
    }
 
    console.log(parcelInfo);
+
+   const amount = parcelInfo.cost;
    
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -57,7 +59,7 @@ import { useQuery } from '@tanstack/react-query';
             <form className="bg-white p-6 rounded-2xl shadow-md max-w-md mx-auto space-y-4" onSubmit={handleSubmit}>
             <CardElement className='p-2 border rounded' />
                  <button  className="btn btn-primary w-full" type="submit" disabled={!stripe}>
-        Pay Now
+        Pay ${amount}
       </button>
       {
         error && <p className='text-red-500'> {error}</p>
