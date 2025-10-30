@@ -8,7 +8,7 @@ const Coverage = () => {
 
       if (!Array.isArray(serviceCenters)) {
     console.error("Invalid service center data:", serviceCenters);
-    return <p>No service center data available.</p>;
+    return <p>No data available.</p>;
   }
 
 
