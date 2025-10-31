@@ -62,6 +62,7 @@ const PaymentForm = () => {
         parcelId,
       });
 console.log(intentRes);
+
       const clientSecret = intentRes.data.clientSecret;
 
       // Step 3: Confirm Card Payment
