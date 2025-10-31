@@ -29,6 +29,8 @@ import { useQuery } from '@tanstack/react-query';
    console.log(parcelInfo);
 
    const amount = parcelInfo.cost;
+   const amountInCents = amount * 100;
+   console.log(amountInCents);
    
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -53,13 +55,23 @@ import { useQuery } from '@tanstack/react-query';
             setError('');
             console.log('paymentMethod', paymentMethod)
          }
+
+
+         // step-2: create payment intent 
+         const res = await axiosSecure.post('/create-payment-intent', {
+            amountInCents,
+            parcelId
+         })
+         
+         console.log('res from intent', res)
+
     }
     return (
         <div>
             <form className="bg-white p-6 rounded-2xl shadow-md max-w-md mx-auto space-y-4" onSubmit={handleSubmit}>
             <CardElement className='p-2 border rounded' />
                  <button  className="btn btn-primary w-full" type="submit" disabled={!stripe}>
-        Pay ${amount}
+        Pay {amount}
       </button>
       {
         error && <p className='text-red-500'> {error}</p>

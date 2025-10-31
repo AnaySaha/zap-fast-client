@@ -27,7 +27,7 @@
     "react-leaflet": "^5.0.0",
     "react-responsive-carousel": "^3.2.23",
     "react-router-dom": "^7.9.1",
-    "react-toastify": "^11.0.5",
+    "react-toastify": "^8.2.0",
     "sweetalert2": "^11.26.3",
     "tailwindcss": "^4.1.13"
   },
