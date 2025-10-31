@@ -29,10 +29,14 @@ const MyParcels = () => {
     alert(`Viewing parcel: ${parcel.title}\nTracking ID: ${parcel.tracking_id}`);
   };
 
-  const handlePay = async (parcel) => {
-    alert(`Redirecting to payment for parcel: ${parcel.tracking_id}`);
-  navigate(`/dashboard/payment/${parcel}`)
-  };
+const handlePay = (parcel) => {
+  console.log('Pay clicked:', parcel);
+  if (!parcel?._id) {
+    console.error('Parcel ID missing', parcel);
+    return;
+  }
+  navigate(`/dashboard/payment/${parcel._id}`);
+};
 
   const handleDelete = async (id) => {
     const result = await Swal.fire({
