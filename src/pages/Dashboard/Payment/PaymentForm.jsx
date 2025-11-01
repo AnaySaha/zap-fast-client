@@ -65,6 +65,7 @@ console.log(intentRes);
 
       const clientSecret = intentRes.data.clientSecret;
 
+      //  problem found in Confirmed Payment need to Fixed
       // Step 3: Confirm Card Payment
       const confirmResult = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
