@@ -61,8 +61,8 @@ const PaymentForm = () => {
         amountInCents,
         parcelId,
       });
-console.log(intentRes);
 
+      console.log(intentRes);
       const clientSecret = intentRes.data.clientSecret;
 
       //  problem found in Confirmed Payment need to Fixed
@@ -84,7 +84,8 @@ console.log(intentRes);
 
       if (confirmResult.paymentIntent?.status === 'succeeded') {
         const transactionId = confirmResult.paymentIntent.id;
-
+        console.log(confirmResult);
+       
         // Step 4: Save payment history to DB
         const paymentData = {
           parcelId,
