@@ -5,13 +5,15 @@ import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
 import Swal from 'sweetalert2';
 import useAuth from '../../../hooks/useAuth'; // ✅ Added user hook
+import { useQueryClient } from '@tanstack/react-query';
 
-const PaymentForm = () => {
+  const PaymentForm = () => {
   const stripe = useStripe();
   const elements = useElements();
   const { parcelId } = useParams();
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { user } = useAuth(); // ✅ Get logged-in user info
 
   const [error, setError] = useState('');
@@ -91,7 +93,7 @@ const PaymentForm = () => {
           parcelId,
           email: user.email,
           amount,
-          transactionId,
+          transactionId: confirmResult.paymentIntent.id,
           paymentMethod: confirmResult.paymentIntent.payment_method_types,
         };
 
@@ -104,8 +106,7 @@ const PaymentForm = () => {
             html: `<strong>Transaction ID:</strong> <code>${transactionId}</code>`,
             confirmButtonText: 'Go to My Parcels',
           });
-
-
+          queryClient.invalidateQueries(['my-parcels', user.email]);
           navigate('/dashboard/myParcels');
         }
       }
