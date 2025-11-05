@@ -47,6 +47,9 @@ const DashboardLayout = () => {
       <ProfastLogo></ProfastLogo>
       <li><a>Home</a></li>
       <li><NavLink to="/dashboard/myParcels">Parcels</NavLink></li>
+      <li><NavLink to="/dashboard/paymentHistory">Payment History</NavLink></li>
+      <li><NavLink to="/dashboard/track">Trac a Package</NavLink></li>
+      <li><NavLink to="/dashboard/profile">Update Profile</NavLink></li>
     </ul>
   </div>
 </div>
