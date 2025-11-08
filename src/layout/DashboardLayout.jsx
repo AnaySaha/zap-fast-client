@@ -50,7 +50,8 @@ const DashboardLayout = () => {
       <li><NavLink to="/dashboard/paymentHistory">Payment History</NavLink></li>
       <li><NavLink to="/dashboard/track">Trac a Package</NavLink></li>
       <li><NavLink to="/dashboard/profile">Update Profile</NavLink></li>
-      <li><NavLink to="/dashboard/profile">Rider Info</NavLink></li>
+      <li><NavLink to="/dashboard/riderifo">Rider Profile</NavLink></li>
+
     </ul>
   </div>
 </div>
