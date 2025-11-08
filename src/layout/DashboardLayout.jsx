@@ -1,4 +1,5 @@
 import React from 'react';
+import { FaHome, FaBoxOpen, FaMoneyCheckAlt, FaTruck, FaUserEdit } from "react-icons/fa";
 import { NavLink, Outlet } from 'react-router-dom';
 import ProfastLogo from '../pages/Home/Home/shared/ProfastLogo/ProfastLogo';
 const DashboardLayout = () => {
@@ -45,12 +46,32 @@ const DashboardLayout = () => {
     <ul className="menu bg-base-200 min-h-full w-80 p-4">
       {/* Sidebar content here */}
       <ProfastLogo></ProfastLogo>
-      <li><a>Home</a></li>
-      <li><NavLink to="/dashboard/myParcels">Parcels</NavLink></li>
-      <li><NavLink to="/dashboard/paymentHistory">Payment History</NavLink></li>
-      <li><NavLink to="/dashboard/track">Trac a Package</NavLink></li>
-      <li><NavLink to="/dashboard/profile">Update Profile</NavLink></li>
-      <li><NavLink to="/dashboard/riderifo">Rider Profile</NavLink></li>
+       <li>
+        <NavLink to="/dashboard">
+          <FaHome className="mr-2" /> Home
+        </NavLink>
+      </li>
+      <li>
+        <NavLink to="/dashboard/myParcels">
+          <FaBoxOpen className="mr-2" /> Parcels
+        </NavLink>
+      </li>
+      <li>
+        <NavLink to="/dashboard/paymentHistory">
+          <FaMoneyCheckAlt className="mr-2" /> Payment History
+        </NavLink>
+      </li>
+      <li>
+        <NavLink to="/dashboard/track">
+          <FaTruck className="mr-2" /> Track a Package
+        </NavLink>
+      </li>
+      <li>
+        <NavLink to="/dashboard/profile">
+          <FaUserEdit className="mr-2" /> Update Profile
+        </NavLink>
+      </li>
+      
 
     </ul>
   </div>
