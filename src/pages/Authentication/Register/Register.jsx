@@ -17,6 +17,13 @@ const Register = () => {
                 console.error(error);
               })
           }
+
+          const handleImageUpload = e =>{
+            const image = e.target.files[0];
+            console.log(image); 
+          const formData = new FormData(); 
+          formData.append('image', image);        
+        }
   
           return (
               <div>
@@ -25,7 +32,13 @@ const Register = () => {
                       <fieldset className="fieldset">
 
             <label className="label">Name</label>
-              <input type="name" {...register('name')} className="input" placeholder="Name" />
+              <input type="text" {...register('name')} 
+              className="input" placeholder="Tour Image" />
+
+            <label className="label">Name</label>
+              <input type="file" 
+              onChange={handleImageUpload}
+              className="input" placeholder="Name" />
               
   
               <label className="label">Email</label>
