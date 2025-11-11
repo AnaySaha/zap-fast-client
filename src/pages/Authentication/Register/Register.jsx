@@ -59,7 +59,7 @@ const Register = () => {
               
               </fieldset>
               <button className="btn btn-neutral mt-4">Register</button>
-                <p><small>Already have an account? Please <Link className='btn btn-link' to="/login">
+                <p><small>Already have an account? <Link className='btn btn-link' to="/login">
                 Login</Link> </small></p>
                   </form>
                   <SocialLogin></SocialLogin>
