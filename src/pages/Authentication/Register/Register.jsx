@@ -35,7 +35,7 @@ const Register = () => {
               <input type="text" {...register('name')} 
               className="input" placeholder="Tour Image" />
 
-            <label className="label">Name</label>
+            <label className="label">Photo</label>
               <input type="file" 
               onChange={handleImageUpload}
               className="input" placeholder="Name" />
