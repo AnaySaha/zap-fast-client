@@ -10,7 +10,7 @@ const Login = () => {
     const {signIn} = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
-    const from = location.state?.from || '/';
+    const from = location.state?.from.pathname || '/';
 
 
         const onSubmit = data =>{
