@@ -24,7 +24,7 @@ const MyParcels = () => {
       return res.data;
     },
   });
-
+ 
   const handleView = (parcel) => {
     alert(`Viewing parcel: ${parcel.title}\nTracking ID: ${parcel.tracking_id}`);
   };
