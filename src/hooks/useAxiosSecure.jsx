@@ -16,4 +16,4 @@ const useAxiosSecure = () => {
   return axiosSecure;
 };
 
-export default useAxiosSecure;npm install firebase-admin --save
+export default useAxiosSecure;
