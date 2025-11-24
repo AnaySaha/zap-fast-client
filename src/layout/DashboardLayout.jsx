@@ -79,7 +79,7 @@ const DashboardLayout = () => {
   </li>
 
   <li>
-  <NavLink to="/dashboard/pendingRiders">
+  <NavLink to="/dashboard/pending-riders">
     <FaClock className="mr-2" /> Pending Riders
   </NavLink>
   </li>
