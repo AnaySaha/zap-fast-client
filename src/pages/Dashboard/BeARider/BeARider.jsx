@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import useAuth from "../../../hooks/useAuth";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import Swal from "sweetalert2";
 
 
 const BeARider = () => {
@@ -8,6 +10,7 @@ const BeARider = () => {
   const [serviceCenters, setServiceCenters] = useState([]);
   const [regions, setRegions] = useState([]);
   const [districts, setDistricts] = useState([]);
+  const axiosSecure = useAxiosSecure();
 
   const [formData, setFormData] = useState({
     name: user?.displayName || "",
@@ -60,8 +63,15 @@ const BeARider = () => {
     console.log("Rider Application Submitted:", formData);
 
     // TODO: POST to backend
-    // axiosSecure.post('/riders', formData)
-    //   .then(res => console.log(res.data))
+    axiosSecure.post('/riders', formData)
+      .then(res => {
+      if(res.data.insertedId)
+        Swal.fire({
+      icon: "success",
+      title: "Application Submitted!!",
+      text: "Your application is pending approval."
+    })
+      })
   };
 
   return (
