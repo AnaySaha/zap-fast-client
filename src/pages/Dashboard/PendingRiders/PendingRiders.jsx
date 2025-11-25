@@ -9,7 +9,7 @@ const PendingRiders = () => {
   const [selectedRider, setSelectedRider] = useState(null);
 
   // Load pending riders
-  const { data: riders = [], isLoading } = useQuery({
+  const {isLoading, data: riders = [],} = useQuery({
     queryKey: ["pending-riders"],
     queryFn: async () => {
       const res = await axiosSecure.get("/riders/pending");
