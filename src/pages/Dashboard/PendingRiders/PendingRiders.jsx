@@ -19,10 +19,12 @@ const PendingRiders = () => {
 
   if (isLoading) return <p className="p-6">Loading...</p>;
 
+
+
   // Approve rider
-  const handleApprove = async (id) => {
+  const handleApprove = async (id, email) => {
     try {
-      await axiosSecure.patch(`/riders/approve/${id}`);
+      await axiosSecure.patch(`/riders/approve/${id}`, { email });
 
       Swal.fire({
         icon: "success",
@@ -132,18 +134,18 @@ const PendingRiders = () => {
             <div className="modal-action">
               <button
                 className="btn btn-success"
-                onClick={() => handleApprove(selectedRider._id)}
+                onClick={() => handleApprove(selectedRider._id, selectedRider.email)}
               >
                 Approve
               </button>
 
               <button
                 className="btn btn-error"
-                onClick={() => handleReject(selectedRider._id)}
+                onClick={() => handleReject(selectedRider._id, selectedRider.email)}
               >
                 Reject
               </button>
-
+              
               <button
                 className="btn"
                 onClick={() => setSelectedRider(null)}
