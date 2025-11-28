@@ -10,7 +10,7 @@ const PendingRiders = () => {
 
   // Load pending riders
   const {isLoading, data: riders = [],} = useQuery({
-    queryKey: ["pending-riders"],
+    queryKey: ["pending-Plo"],
     queryFn: async () => {
       const res = await axiosSecure.get("/riders/pending");
       return res.data.data;
