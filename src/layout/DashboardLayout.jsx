@@ -2,6 +2,8 @@ import React from 'react';
 import { FaHome, FaBoxOpen, FaMoneyCheckAlt, FaTruck, FaUserEdit } from "react-icons/fa";
 import { NavLink, Outlet } from 'react-router-dom';
 import { FaMotorcycle, FaClock } from "react-icons/fa";
+import { FaUserShield } from "react-icons/fa";
+
 import ProfastLogo from '../pages/Home/Home/shared/ProfastLogo/ProfastLogo';
 const DashboardLayout = () => {
     return (
@@ -84,6 +86,12 @@ const DashboardLayout = () => {
   </NavLink>
   </li>
       
+      <li>
+    <NavLink to="/dashboard/make-admin">
+    <FaUserShield className="mr-2" /> Make Admin
+    </NavLink>
+    </li>
+
 
     </ul>
   </div>
