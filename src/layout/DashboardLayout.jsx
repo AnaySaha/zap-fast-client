@@ -3,9 +3,18 @@ import { FaHome, FaBoxOpen, FaMoneyCheckAlt, FaTruck, FaUserEdit } from "react-i
 import { NavLink, Outlet } from 'react-router-dom';
 import { FaMotorcycle, FaClock } from "react-icons/fa";
 import { FaUserShield } from "react-icons/fa";
-
 import ProfastLogo from '../pages/Home/Home/shared/ProfastLogo/ProfastLogo';
+import useUserRole from '../hooks/useUserRole';
+
+
+
+
+
 const DashboardLayout = () => {
+
+  const { role } = useUserRole();
+  console.log(role);
+
     return (
 <div className="drawer lg:drawer-open">
   <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
@@ -74,7 +83,11 @@ const DashboardLayout = () => {
           <FaUserEdit className="mr-2" /> Update Profile
         </NavLink>
       </li>
-      <li>
+     
+        { role === 'admin' &&
+
+          <>
+           <li>
   <NavLink to="/dashboard/action-riders">
     <FaMotorcycle className="mr-2" /> Action Riders
   </NavLink>
@@ -91,7 +104,8 @@ const DashboardLayout = () => {
     <FaUserShield className="mr-2" /> Make Admin
     </NavLink>
     </li>
-
+          </>
+        }
 
     </ul>
   </div>
