@@ -19,6 +19,7 @@ import { Component } from "react";
 import MakeAdmin from "../pages/Dashboard/MakeAdmin/MakeAdmin";
 import Forbidden from "../pages/Forbidden/Forbidden";
 import AdminRoute from "../routes/AdminRoute";
+import AssignRider from "../pages/Dashboard/AssignRider/AssignRider";
 
 
 
@@ -102,6 +103,11 @@ export const router = createBrowserRouter([
       {
         path: 'track',
         Component: Trackparcel
+      },
+
+      {
+        path: 'assign-rider',
+        element: <AdminRoute><AssignRider></AssignRider></AdminRoute>
       },
 
       {

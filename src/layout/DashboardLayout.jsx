@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaHome, FaBoxOpen, FaMoneyCheckAlt, FaTruck, FaUserEdit } from "react-icons/fa";
 import { NavLink, Outlet } from 'react-router-dom';
-import { FaMotorcycle, FaClock } from "react-icons/fa";
+import { FaMotorcycle, FaPeopleCarry, FaClock } from "react-icons/fa";
 import { FaUserShield } from "react-icons/fa";
 import ProfastLogo from '../pages/Home/Home/shared/ProfastLogo/ProfastLogo';
 import useUserRole from '../hooks/useUserRole';
@@ -87,6 +87,13 @@ const DashboardLayout = () => {
         { role === 'admin' &&
 
           <>
+          <li>
+  <NavLink to="/dashboard/assign-rider">
+    <FaPeopleCarry className="mr-2" /> Assign Rider
+  </NavLink>
+</li>
+
+
            <li>
   <NavLink to="/dashboard/action-riders">
     <FaMotorcycle className="mr-2" /> Action Riders
