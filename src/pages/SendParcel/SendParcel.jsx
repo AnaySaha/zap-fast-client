@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import "react-toastify/dist/ReactToastify.css";
 import useAuth from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import { useNavigate } from "react-router-dom";
 
 
 // src/utils/generateTrackingId.js
@@ -39,6 +40,7 @@ const SendParcel = () => {
 
   const {user} = useAuth();
   const axiosSecure = useAxiosSecure();
+  const navigate = useNavigate();
   const queryClient = useQueryClient(); // ✅ added
   
 
@@ -182,6 +184,8 @@ const onSubmit = (data) => {
 
       // redirect to payment
       if (res.data.insertedId){
+
+
         Swal.fire({
           title: "Redirecting.....",
           text: "Proceeding to payment gateway.",
@@ -192,6 +196,7 @@ const onSubmit = (data) => {
       }
     })
     reset();
+    navigate('/dashboard/myParcels')
   };
 
   return (
