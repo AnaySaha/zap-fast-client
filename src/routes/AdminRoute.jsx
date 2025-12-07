@@ -8,7 +8,7 @@ const AdminRoute = ({ children }) => {
   const location = useLocation();
 
   if (authLoading || roleLoading) {
-    return <p>Loading...</p>;
+    return <p>Loading......</p>;
   }
 
   if (!user || role !== "admin") {
