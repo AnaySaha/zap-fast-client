@@ -13,6 +13,7 @@ import useUserRole from '../hooks/useUserRole';
 const DashboardLayout = () => {
 
   const { role } = useUserRole();
+
   console.log(role);
 
     return (
@@ -100,8 +101,6 @@ const DashboardLayout = () => {
       {/* Admin Links */}
      
         { role === 'admin' &&
-
-        
 
           <>
           <li>

@@ -3,7 +3,7 @@ import React from 'react';
 const PendingDeliveries = () => {
     return (
         <div>
-            <h1> Pending Riders</h1>
+            <h1> Pending is pending</h1>
         </div>
     );
 };
