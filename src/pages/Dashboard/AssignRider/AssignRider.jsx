@@ -32,39 +32,43 @@ const AssignRider = () => {
     alert(`Viewing parcel: ${parcel.title}\nTracking ID: ${parcel.tracking_id}`);
   };
 
-  const handleAssignRider = async (parcelId) => {
-    const { value: riderName } = await Swal.fire({
-      title: "Assign Rider",
-      input: "text",
-      inputLabel: "Rider Name",
-      inputPlaceholder: "Enter rider name",
-      showCancelButton: true,
-    });
+const handleAssignRider = async (parcelId) => {
+  const { value: formValues } = await Swal.fire({
+    title: "Assign Rider",
+    html:
+      '<input id="swal-name" class="swal2-input" placeholder="Rider Name">' +
+      '<input id="swal-email" class="swal2-input" placeholder="Rider Email">',
+    focusConfirm: false,
+    showCancelButton: true,
+    preConfirm: () => {
+      return {
+        riderName: document.getElementById("swal-name").value,
+        riderEmail: document.getElementById("swal-email").value,
+      };
+    },
+  });
 
-    if (riderName) {
-      try {
-        const res = await axiosSecure.patch(`/parcels/${parcelId}/assign-rider`, {
-          riderName,
-        });
+  if (!formValues?.riderName || !formValues?.riderEmail) return;
 
-        if (res.data.success) {
-          Swal.fire({
-            title: "Assigned!",
-            text: `Rider "${riderName}" has been assigned.`,
-            icon: "success",
-            timer: 1500,
-            showConfirmButton: false,
-          });
-          queryClient.invalidateQueries(["assign-rider-parcels", user.email]);
-        } else {
-          Swal.fire("Error", "Failed to assign rider.", "error");
-        }
-      } catch (err) {
-        console.error(err);
-        Swal.fire("Error", "Something went wrong!", "error");
+  try {
+    const res = await axiosSecure.patch(
+      `/parcels/${parcelId}/assign-rider`,
+      {
+        riderName: formValues.riderName,
+        riderEmail: formValues.riderEmail,
       }
+    );
+
+    if (res.data.success) {
+      Swal.fire("Success", "Rider assigned successfully", "success");
+      queryClient.invalidateQueries(["assign-rider-parcels", user.email]);
     }
-  };
+  } catch (err) {
+    console.error(err);
+    Swal.fire("Error", "Failed to assign rider", "error");
+  }
+};
+
 
   if (isLoading)
     return <p className="text-center mt-10 text-lg">Loading parcels...</p>;
