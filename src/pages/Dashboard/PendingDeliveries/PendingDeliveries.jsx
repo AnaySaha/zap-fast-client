@@ -1,59 +1,68 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import { useQuery } from "@tanstack/react-query";
 import useAuth from "../../../hooks/useAuth";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
 
 const PendingDeliveries = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
-  const queryClient = useQueryClient();
 
-  const { data: parcels = [], isLoading, isError, error } = useQuery({
-    queryKey: ["pending-deliveries", user?.email],
+  const {
+    data: parcels = [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["rider-tasks", user?.email],
     enabled: !!user?.email,
     queryFn: async () => {
-      const res = await axiosSecure.get(`/rider/tasks?email=${user.email}`);
+      const res = await axiosSecure.get(
+        `/rider/tasks?email=${user.email}`
+      );
       return res.data;
     },
   });
 
-  const updateStatus = async (parcel, newStatus) => {
-    const actionText =
-      newStatus === "in_transit"
-        ? "mark this parcel as Picked Up?"
-        : "mark this parcel as Delivered?";
-
-    const result = await Swal.fire({
+  // 🔄 Update delivery status
+  const updateStatus = async (parcelId, status) => {
+    const confirm = await Swal.fire({
       title: "Are you sure?",
-      text: `You are about to ${actionText}`,
-      icon: "warning",
+      text: `Change status to "${status.replace("_", " ")}"?`,
+      icon: "question",
       showCancelButton: true,
-      confirmButtonText: "Yes, confirm",
+      confirmButtonText: "Yes",
     });
 
-    if (!result.isConfirmed) return;
+    if (!confirm.isConfirmed) return;
 
     try {
-      await axiosSecure.patch(`/parcels/${parcel._id}/status`, {
-        delivery_status: newStatus,
-      });
+      const res = await axiosSecure.patch(
+        `/parcels/${parcelId}/delivery-status`,
+        { status }
+      );
 
-      Swal.fire({
-        icon: "success",
-        title: "Updated!",
-        timer: 1200,
-        showConfirmButton: false,
-      });
-
-      queryClient.invalidateQueries(["pending-deliveries", user.email]);
+      if (res.data.success) {
+        Swal.fire("Success", "Status updated successfully", "success");
+        refetch();
+      }
     } catch (err) {
       console.error(err);
-      Swal.fire("Error", "Failed to update parcel status", "error");
+      Swal.fire("Error", "Failed to update status", "error");
     }
   };
 
-  if (isLoading) return <p>Loading pending deliveries...</p>;
-  if (isError) return <p className="text-red-600">{error.message}</p>;
+  if (isLoading) {
+    return <p className="text-center mt-10">Loading deliveries...</p>;
+  }
+
+  if (isError) {
+    return (
+      <p className="text-center text-red-600 mt-10">
+        Error: {error.message}
+      </p>
+    );
+  }
 
   return (
     <div className="p-6">
@@ -67,54 +76,72 @@ const PendingDeliveries = () => {
         </p>
       ) : (
         <div className="overflow-x-auto">
-          <table className="table w-full">
+          <table className="min-w-full border border-gray-200 rounded-lg">
             <thead className="bg-gray-100">
               <tr>
-                <th>#</th>
-                <th>Tracking ID</th>
-                <th>Receiver</th>
-                <th>Address</th>
-                <th>Status</th>
-                <th>Action</th>
+                <th className="p-3 border-b">#</th>
+                <th className="p-3 border-b">Tracking ID</th>
+                <th className="p-3 border-b">Receiver</th>
+                <th className="p-3 border-b">Address</th>
+                <th className="p-3 border-b">Status</th>
+                <th className="p-3 border-b text-center">Action</th>
               </tr>
             </thead>
 
             <tbody>
               {parcels.map((parcel, index) => (
-                <tr key={parcel._id}>
-                  <td>{index + 1}</td>
-                  <td className="font-mono text-sm">{parcel.tracking_id}</td>
-                  <td>{parcel.receiverName}</td>
-                  <td className="max-w-xs truncate">{parcel.receiverAddress}</td>
-                  <td>
+                <tr key={parcel._id} className="hover:bg-gray-50">
+                  <td className="p-3 border-b">{index + 1}</td>
+                  <td className="p-3 border-b font-mono">
+                    {parcel.tracking_id}
+                  </td>
+                  <td className="p-3 border-b">
+                    {parcel.receiverName}
+                  </td>
+                  <td className="p-3 border-b">
+                    {parcel.receiverAddress}
+                  </td>
+                  <td className="p-3 border-b capitalize">
                     <span
-                      className={`px-2 py-1 text-sm rounded ${
-                        parcel.delivery_status === "assigned"
+                      className={`px-2 py-1 rounded text-sm ${
+                        parcel.delivery_status === "rider_assigned"
                           ? "bg-yellow-100 text-yellow-700"
-                          : "bg-blue-100 text-blue-700"
+                          : parcel.delivery_status === "in_transit"
+                          ? "bg-blue-100 text-blue-700"
+                          : "bg-green-100 text-green-700"
                       }`}
                     >
                       {parcel.delivery_status.replace("_", " ")}
                     </span>
                   </td>
 
-                  <td>
-                    {parcel.delivery_status === "assigned" && (
+                  <td className="p-3 border-b text-center space-x-2">
+                    {parcel.delivery_status === "rider_assigned" && (
                       <button
-                        onClick={() => updateStatus(parcel, "in_transit")}
-                        className="btn btn-sm bg-blue-500 text-white"
+                        onClick={() =>
+                          updateStatus(parcel._id, "in_transit")
+                        }
+                        className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
                       >
-                        Picked Up
+                        Mark Picked Up
                       </button>
                     )}
 
                     {parcel.delivery_status === "in_transit" && (
                       <button
-                        onClick={() => updateStatus(parcel, "delivered")}
-                        className="btn btn-sm bg-green-500 text-white"
+                        onClick={() =>
+                          updateStatus(parcel._id, "delivered")
+                        }
+                        className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
                       >
-                        Delivered
+                        Mark Delivered
                       </button>
+                    )}
+
+                    {parcel.delivery_status === "delivered" && (
+                      <span className="text-green-600 font-medium">
+                       Delivary Completed 
+                      </span>
                     )}
                   </td>
                 </tr>
