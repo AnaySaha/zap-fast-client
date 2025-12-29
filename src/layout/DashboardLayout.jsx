@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaHome, FaBoxOpen, FaMoneyCheckAlt, FaTruck, FaUserEdit, FaTasks } from "react-icons/fa";
+import { FaHome, FaBoxOpen, FaMoneyCheckAlt, FaTruck, FaUserEdit, FaTasks, FaCheck } from "react-icons/fa";
 import { NavLink, Outlet } from 'react-router-dom';
 import { FaMotorcycle, FaPeopleCarry, FaClock } from "react-icons/fa";
 import { FaUserShield } from "react-icons/fa";
@@ -93,6 +93,13 @@ const DashboardLayout = () => {
   <NavLink to="/dashboard/pending-deliveries">
     <FaTasks className="mr-2" /> Pending Deliveries
   </NavLink>
+</li>
+
+<li>
+  <NavLink to="/dashboard/completed-deliveries" className="flex items-center gap-2">
+  <FaCheck />
+  Completed Deliveries
+</NavLink>
 </li>
 
       
