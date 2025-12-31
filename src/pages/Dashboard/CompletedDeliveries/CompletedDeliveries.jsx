@@ -57,7 +57,7 @@ const CompletedDeliveries = () => {
                 <th className="p-3 border-b">Status</th>
               </tr>
             </thead>
-
+            
             <tbody>
               {parcels.map((parcel, index) => (
                 <tr key={parcel._id} className="hover:bg-gray-50">
