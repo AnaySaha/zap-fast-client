@@ -61,48 +61,6 @@ const handleCashOut = async () => {
 
   
 
-//   const handleCashOut = async () => {
-//   const { value: amount } = await Swal.fire({
-//     title: "Cash Out",
-//     input: "number",
-//     inputLabel: "Enter amount",
-//     inputAttributes: {
-//       min: 1,
-//     },
-//     showCancelButton: true,
-//   });
-
-//   if (!amount) return;
-
-//   if (Number(amount) > data.total) {
-//     return Swal.fire(
-//       "Error",
-//       "Amount cannot be greater than unpaid balance",
-//       "error"
-//     );
-//   }
-
-//   try {
-//     const res = await axiosSecure.post("/rider/cashout", {
-//       amount: Number(amount),
-//     });
-
-//     Swal.fire(
-//       "Success",
-//       `You cashed out ৳${res.data.paidAmount}`,
-//       "success"
-//     );
-
-//     refetch();
-//   } catch (err) {
-//     Swal.fire(
-//       "Error",
-//       err.response?.data?.message || "Cash out failed",
-//       "error"
-//     );
-//   }
-// };
-
 
 
 
