@@ -22,21 +22,30 @@ const RiderEarnings = () => {
     },
   });
 
-const handleCashOut = async () => {
+
+
+  
+
+  const handleCashOut = async () => {
   const { value: amount } = await Swal.fire({
     title: "Cash Out",
     input: "number",
-    inputLabel: "Enter amount to cash out",
-    inputPlaceholder: "৳ amount",
-    showCancelButton: true,
-    inputValidator: (value) => {
-      if (!value || value <= 0) return "Enter a valid amount";
-      if (value > data.unpaid) return "Amount exceeds unpaid balance";
-      return null;
+    inputLabel: "Enter amount",
+    inputAttributes: {
+      min: 1,
     },
+    showCancelButton: true,
   });
 
   if (!amount) return;
+
+  if (Number(amount) > data.total) {
+    return Swal.fire(
+      "Error",
+      "Amount cannot be greater than unpaid balance",
+      "error"
+    );
+  }
 
   try {
     const res = await axiosSecure.post("/rider/cashout", {
@@ -59,8 +68,6 @@ const handleCashOut = async () => {
   }
 };
 
-  
-
 
 
 
@@ -72,7 +79,7 @@ const handleCashOut = async () => {
     <div className="p-6">
       {/* 🔹 Header */}
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">💰 Rider Earnings</h2>
+        <h2 className="text-xl font-semibold">💰 Rider </h2>
 
         <button
           disabled={unpaidAmount === 0}
