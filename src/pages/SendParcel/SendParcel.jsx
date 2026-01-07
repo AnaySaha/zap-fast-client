@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import useAuth from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useNavigate } from "react-router-dom";
+import useTrackingLogger from "../../hooks/useTrackingLogger";
 
 
 // src/utils/generateTrackingId.js
@@ -34,13 +35,14 @@ const SendParcel = () => {
     register,
     handleSubmit,
     watch,
-    reset,
+    
     formState: { errors },
   } = useForm();
 
   const {user} = useAuth();
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
+  const { logTrackingUpdate } = useTrackingLogger();
   const queryClient = useQueryClient(); // ✅ added
   
 
@@ -166,38 +168,48 @@ const onSubmit = (data) => {
   });
 };
 
-  const handleConfirm = (data, cost) => {
-    const parcelData = {
-      ...data,
-      cost,
-      created_by: user.email,
-      payment_status: 'unpaid',
-      delivery_status: 'not_collected',
-      tracking_id: generateTrackingId(),
-      creation_date: new Date().toISOString(),
-    };
-    console.log("Ready for payment:", parcelData);
 
-    axiosSecure.post('/parcels', parcelData)
-    .then(res=>{
-      console.log(res.data);
+const handleConfirm = async (data, cost) => {
+  const tracking_id = generateTrackingId();
 
-      // redirect to payment
-      if (res.data.insertedId){
-
-
-        Swal.fire({
-          title: "Redirecting.....",
-          text: "Proceeding to payment gateway.",
-          icon: "success",
-          timer: 1500,
-          showConfirmButton: false,
-        });
-      }
-    })
-    reset();
-    navigate('/dashboard/myParcels')
+  const parcelData = {
+    ...data,
+    cost,
+    created_by: user.email,
+    payment_status: "unpaid",
+    delivery_status: "not_collected",
+    tracking_id,
+    creation_date: new Date().toISOString(),
   };
+
+  try {
+    const res = await axiosSecure.post("/parcels", parcelData);
+    console.log(res);
+    // ✅ ALWAYS log tracking, do not depend on insertedId
+    await logTrackingUpdate({
+      tracking_id,
+      status: "parcel_created",
+      details: `Parcel created by ${user.email}`,
+      location: data.senderServiceCenter,
+      updated_by: "user",
+    });
+
+    Swal.fire({
+      title: "Redirecting...",
+      text: "Proceeding to payment gateway.",
+      icon: "success",
+      timer: 1200,
+      showConfirmButton: false,
+    }).then(() => {
+      navigate("/dashboard/myParcels", { replace: true });
+    });
+
+  } catch (error) {
+    console.error("Parcel submit failed:", error);
+    Swal.fire("Error", "Failed to submit parcel", "error");
+  }
+};
+
 
   return (
     <div className="max-w-6xl mx-auto p-8 bg-white shadow-xl rounded-2xl mt-10">
