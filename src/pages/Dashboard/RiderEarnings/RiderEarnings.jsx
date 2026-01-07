@@ -79,7 +79,7 @@ const RiderEarnings = () => {
     <div className="p-6">
       {/* 🔹 Header */}
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">💰 Rider </h2>
+        <h2 className="text-xl font-semibold">💰 Rider Earnings </h2>
 
         <button
           disabled={unpaidAmount === 0}
