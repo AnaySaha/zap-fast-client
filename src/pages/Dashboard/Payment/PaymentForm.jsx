@@ -6,12 +6,14 @@ import { useQuery } from '@tanstack/react-query';
 import Swal from 'sweetalert2';
 import useAuth from '../../../hooks/useAuth'; // ✅ Added user hook
 import { useQueryClient } from '@tanstack/react-query';
+import useTrackingLogger from '../../../hooks/useTrackingLogger';
 
   const PaymentForm = () => {
   const stripe = useStripe();
   const elements = useElements();
   const { parcelId } = useParams();
   const axiosSecure = useAxiosSecure();
+  const {logTrackingUpdate} = useTrackingLogger();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user } = useAuth(); // ✅ Get logged-in user info
@@ -106,7 +108,17 @@ import { useQueryClient } from '@tanstack/react-query';
             html: `<strong>Transaction ID:</strong> <code>${transactionId}</code>`,
             confirmButtonText: 'Go to My Parcels',
           });
+
+          await logTrackingUpdate (
+            {
+            tracking_id: parcelInfo.tracking_id,
+            status: "payment_done",
+            details: `Paid by ${user.displayName}`,
+            updated_by: user.email,
+          }
+        )
           queryClient.invalidateQueries(['my-parcels', user.email]);
+          
           navigate('/dashboard/myParcels');
         }
       }

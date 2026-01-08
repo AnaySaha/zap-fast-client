@@ -3,12 +3,16 @@ import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { FaMotorcycle, FaEye } from "react-icons/fa";
 import Swal from "sweetalert2";
+import useTrackingLogger from "../../../hooks/useTrackingLogger";
+import { useState } from "react";
 
 const AssignRider = () => {
   const { user } = useAuth();
-  console.log(user)
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
+  const { logTrackingUpdate } = useTrackingLogger();
+  const [selectedRider, setSelectedRider] = useState(null);
+  console.log(selectedRider);
 
   /* ================= PARCELS ================= */
   const {
@@ -44,7 +48,7 @@ const AssignRider = () => {
   /* ================= ASSIGN RIDER ================= */
   const handleAssignRider = async (parcel) => {
     try {
-      // 1️⃣ Fetch riders by receiver region
+      // 1️⃣ Fetch riders by region
       const ridersRes = await axiosSecure.get(
         `/riders/by-region?region=${parcel.receiverRegion}`
       );
@@ -59,7 +63,7 @@ const AssignRider = () => {
         );
       }
 
-      // 2️⃣ Build dropdown options
+      // 2️⃣ Build dropdown
       const optionsHtml = riders
         .map(
           (r) =>
@@ -67,7 +71,7 @@ const AssignRider = () => {
         )
         .join("");
 
-      // 3️⃣ SweetAlert dropdown
+      // 3️⃣ Select rider
       const { value: selectedEmail } = await Swal.fire({
         title: "Assign Rider",
         html: `
@@ -92,7 +96,9 @@ const AssignRider = () => {
         (r) => r.email === selectedEmail
       );
 
-      // 4️⃣ Assign rider
+      setSelectedRider(selectedRider);
+
+      // 4️⃣ Assign rider API
       const res = await axiosSecure.patch(
         `/parcels/${parcel._id}/assign-rider`,
         {
@@ -103,6 +109,16 @@ const AssignRider = () => {
 
       if (res.data.success) {
         Swal.fire("Success", "Rider assigned successfully", "success");
+
+        // 5️⃣ TRACKING LOG (FIXED)
+        await logTrackingUpdate({
+          tracking_id: parcel.tracking_id,
+          status: "rider_assigned",
+          details: `Assigned to ${selectedRider.name}`,
+          location: parcel.receiverRegion,
+          updated_by: user.email,
+        });
+
         queryClient.invalidateQueries(["assign-rider-parcels"]);
       }
     } catch (err) {
