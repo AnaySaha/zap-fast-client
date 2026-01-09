@@ -69,6 +69,7 @@ const DashboardLayout = () => {
           <FaBoxOpen className="mr-2" /> Parcels
         </NavLink>
       </li>
+      
       <li>
         <NavLink to="/dashboard/paymentHistory">
           <FaMoneyCheckAlt className="mr-2" /> Payment History
