@@ -2,10 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
+import useTrackingLogger from "../../../hooks/useTrackingLogger";
 
 const PendingDeliveries = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
+  const { logTrackingUpdate } = useTrackingLogger();
 
   const {
     data: parcels = [],
@@ -24,34 +26,112 @@ const PendingDeliveries = () => {
     },
   });
 
-  // 🔄 Update delivery status
-  const updateStatus = async (parcelId, status) => {
-    const confirm = await Swal.fire({
-      title: "Are you sure?",
-      text: `Change status to "${status.replace("_", " ")}"?`,
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonText: "Yes",
-    });
+  /* ================= UPDATE STATUS ================= */
+  const updateStatus = async (parcel, newStatus) => {
+  const confirm = await Swal.fire({
+    title: "Are you sure?",
+    text: `Change status to "${newStatus.replace("_", " ")}"?`,
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+  });
 
-    if (!confirm.isConfirmed) return;
+  if (!confirm.isConfirmed) return;
 
-    try {
-      const res = await axiosSecure.patch(
-        `/parcels/${parcelId}/delivery-status`,
-        { status }
-      );
+  try {
+    const res = await axiosSecure.patch(
+      `/parcels/${parcel._id}/delivery-status`,
+      { status: newStatus }
+    );
 
-      if (res.data.success) {
-        Swal.fire("Success", "Status updated successfully", "success");
-        refetch();
-      }
-    } catch (err) {
-      console.error(err);
-      Swal.fire("Error", "Failed to update status", "error");
+    if (res.data.success) {
+      // ✅ TRACKING LOG
+      await logTrackingUpdate({
+        tracking_id: parcel.tracking_id,
+        status: newStatus,
+        details:
+          newStatus === "in_transit"
+            ? "Parcel picked up by rider"
+            : "Parcel delivered successfully",
+        location: parcel.receiverRegion,
+        updated_by: user.email,
+        rider: {
+          name: user.name || "Unknown Rider",
+          email: user.email,
+        },
+      });
+
+      Swal.fire("Success", "Status updated successfully", "success");
+      refetch();
     }
-  };
+  } catch (err) {
+    console.error(err);
+    Swal.fire("Error", "Failed to update status", "error");
+  }
+};
 
+//   const updateStatus = async (parcel, nextStatus) => {
+//     const confirm = await Swal.fire({
+//       title: "Are you sure?",
+//       text: `Change status to "${nextStatus.replace("_", " ")}"?`,
+//       icon: "question",
+//       showCancelButton: true,
+//       confirmButtonText: "Yes",
+//     });
+
+//     if (!confirm.isConfirmed) return;
+
+//     try {
+//       // 1️⃣ Update parcel delivery_status
+//       const res = await axiosSecure.patch(
+//         `/parcels/${parcel._id}/delivery-status`,
+//         { status: nextStatus }
+//       );
+
+//       if (!res.data.success) {
+//         throw new Error("Parcel status update failed");
+//       }
+
+//       // 2️⃣ Tracking log (ALWAYS CALLED)
+// if (nextStatus === "in_transit") {
+//   await logTrackingUpdate({
+//     tracking_id: parcel.tracking_id,
+//     status: "in_transit",
+//     details: `Parcel picked up by ${user.displayName || user.email}`,
+//     rider: {
+//       name: user.displayName || "Unknown Rider",
+//       email: user.email,
+//     },
+//     location: parcel.senderServiceCenter,
+//     updated_by: user.email,
+//   });
+// }
+
+
+// if (nextStatus === "delivered") {
+//   await logTrackingUpdate({
+//     tracking_id: parcel.tracking_id,
+//     status: "delivered",
+//     details: `Parcel delivered by ${user.displayName || user.email}`,
+//     rider: {
+//       name: user.displayName || "Unknown Rider",
+//       email: user.email,
+//     },
+//     location: parcel.receiverServiceCenter,
+//     updated_by: user.email,
+//   });
+// }
+
+
+//       Swal.fire("Success", "Status updated successfully", "success");
+//       refetch();
+//     } catch (err) {
+//       console.error(err);
+//       Swal.fire("Error", "Failed to update status", "error");
+//     }
+//   };
+
+  /* ================= STATES ================= */
   if (isLoading) {
     return <p className="text-center mt-10">Loading deliveries...</p>;
   }
@@ -64,6 +144,7 @@ const PendingDeliveries = () => {
     );
   }
 
+  /* ================= UI ================= */
   return (
     <div className="p-6">
       <h2 className="text-xl font-semibold mb-4">
@@ -119,7 +200,7 @@ const PendingDeliveries = () => {
                     {parcel.delivery_status === "rider_assigned" && (
                       <button
                         onClick={() =>
-                          updateStatus(parcel._id, "in_transit")
+                          updateStatus(parcel, "in_transit")
                         }
                         className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
                       >
@@ -130,7 +211,7 @@ const PendingDeliveries = () => {
                     {parcel.delivery_status === "in_transit" && (
                       <button
                         onClick={() =>
-                          updateStatus(parcel._id, "delivered")
+                          updateStatus(parcel, "delivered")
                         }
                         className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
                       >
@@ -140,7 +221,7 @@ const PendingDeliveries = () => {
 
                     {parcel.delivery_status === "delivered" && (
                       <span className="text-green-600 font-medium">
-                       Delivary Completed 
+                        Delivery Completed
                       </span>
                     )}
                   </td>
