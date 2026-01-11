@@ -24,6 +24,7 @@ import PendingDeliveries from "../pages/Dashboard/PendingDeliveries/PendingDeliv
 import RiderRoute from "./RiderRoute";
 import CompletedDeliveries from "../pages/Dashboard/CompletedDeliveries/CompletedDeliveries";
 import RiderEarnings from "../pages/Dashboard/RiderEarnings/RiderEarnings";
+import AdminDashboard from "../pages/Dashboard/AdminDashboard/AdminDashboard";
 
 
 
@@ -151,6 +152,11 @@ export const router = createBrowserRouter([
         path: 'action-riders',
         // Component: ActiveRiders
         element: <AdminRoute><ActiveRiders></ActiveRiders></AdminRoute>
+      },
+
+      {
+        path:'admin-dashboard',
+        element: <AdminRoute><AdminDashboard></AdminDashboard></AdminRoute>
       },
 
       {
